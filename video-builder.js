@@ -95,7 +95,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			var frameIndices = [];
 			var frOffset = 4; // 'movi' +0
 			var IndexEntryOrder = ['chId', 'dwFlags', 'dwOffset', 'dwLength'];
-			for (var i = 0;i < frameCount;i++) {
+			for (var i = frameCount; i--;) {
 				var frsize = this.addVideoStreamData(moviLIST.aStreams, this.frameList[i]);
 				frameIndices.push({
 					chId: '00dc',
