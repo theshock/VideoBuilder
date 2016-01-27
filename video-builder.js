@@ -28,7 +28,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 
 	var BlobBuilder = function() {
 		this.parts = [];
-	}
+	};
 
 	BlobBuilder.prototype.append = function(part) {
 		this.parts.push(part);
@@ -98,7 +98,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			var frameIndices = [];
 			var frOffset = 4; // 'movi' +0
 			var IndexEntryOrder = ['chId', 'dwFlags', 'dwOffset', 'dwLength'];
-			for (var i = frameCount; i--;) {
+			for (var i = 0; i < frameCount; i++) {
 				var frsize = this.addVideoStreamData(moviLIST.aStreams, this.frameList[i]);
 				frameIndices.push({
 					chId: '00dc',

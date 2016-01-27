@@ -256,7 +256,6 @@
 	
 	function finishFrames() {
 		renderProgress(bxs.g, 'Ready for download!');
-		mBuilder.frameList.reverse();
 		mBuilder.finish(function(generatedURL) {
 			updateLink(generatedURL);
 		});
@@ -278,8 +277,9 @@
 	}
 		
 	function updateLink(url) {
-		jQuery('#gen-download').attr('href', url || null)
-		                       .css('opacity', url ? '1' : '');
+		jQuery('#gen-download')
+			.attr('href', url || null)
+			.css('opacity', url ? '1' : '');
 	}
 
 	window.launch = function() {
