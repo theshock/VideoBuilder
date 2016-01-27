@@ -200,7 +200,7 @@
 			allFrames = restFrames = 80;
 			drawnFrames = 0;
 			
-			mBuilder = new movbuilder.MotionJPEGBuilder();
+			mBuilder = new VideoBuilder();
 			mBuilder.setup(bxs.width, bxs.height, 30);
 			for (var i = 0;i < 30;i++) {
 				mBuilder.addCanvasFrame(bxs.targetCanvas);

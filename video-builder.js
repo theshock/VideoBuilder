@@ -489,7 +489,5 @@ Copyright (c) 2016 Ponomarenko Pavlo
 	
 	
 	// export
-	aGlobal.movbuilder = {
-		MotionJPEGBuilder: VideoBuilder
-	};
+	aGlobal.VideoBuilder = VideoBuilder;
 })(window);
