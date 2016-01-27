@@ -10,9 +10,8 @@ Copyright (c) 2016 Ponomarenko Pavlo
 	var AVIF_HASINDEX = 0x00000010;
 	var AVIIF_KEYFRAME = 0x00000010;
 	var RateBase = 1000000;
-	var Verbose = false;
 
-	function MotionJPEGBuilder() {
+	function VideoBuilder() {
 		this.builder = new BlobBuilder();
 		this.b64 = new Base64();
 		this.movieDesc = {
@@ -21,9 +20,9 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			maxJPEGSize: 0
 		};
 		
-		this.avi = MotionJPEGBuilder.createAVIStruct();
-		this.headerLIST = MotionJPEGBuilder.createHeaderLIST();
-		this.moviLIST   = MotionJPEGBuilder.createMoviLIST();
+		this.avi = VideoBuilder.createAVIStruct();
+		this.headerLIST = VideoBuilder.createHeaderLIST();
+		this.moviLIST   = VideoBuilder.createMoviLIST();
 		this.frameList  = [];
 	}
 
@@ -44,7 +43,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		return this.blob;
 	};
 	
-	MotionJPEGBuilder.prototype = {
+	VideoBuilder.prototype = {
 		setup: function(frameWidth, frameHeight, fps) {
 			this.movieDesc.w = frameWidth;
 			this.movieDesc.h = frameHeight;
@@ -80,7 +79,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		},
 		
 		addVideoStreamData: function(list, frameBuffer) {
-			var stream = MotionJPEGBuilder.createMoviStream();
+			var stream = VideoBuilder.createMoviStream();
 			stream.dwSize = frameBuffer.size;
 			stream.handler = function(bb) {
 				bb.append(frameBuffer);
@@ -116,27 +115,27 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			// stream header
 			
 			var frameDu = Math.floor(RateBase / this.movieDesc.fps);
-			var strh = MotionJPEGBuilder.createStreamHeader();
+			var strh = VideoBuilder.createStreamHeader();
 			strh.wRight  = this.movieDesc.w;
 			strh.wBottom = this.movieDesc.h;
 			strh.dwLength = this.frameList.length;
 			strh.dwScale  = frameDu;
 
-			var bi = MotionJPEGBuilder.createBitmapHeader();
+			var bi = VideoBuilder.createBitmapHeader();
 			bi.dwWidth  = this.movieDesc.w;
 			bi.dwHeight = this.movieDesc.h;
 			bi.dwSizeImage = 3 * bi.dwWidth * bi.dwHeight;
 
-			var strf = MotionJPEGBuilder.createStreamFormat();
+			var strf = VideoBuilder.createStreamFormat();
 			strf.dwSize = bi.dwSize;
 			strf.sContent = bi;
 			
-			var strl = MotionJPEGBuilder.createStreamHeaderLIST();
+			var strl = VideoBuilder.createStreamHeaderLIST();
 			strl.dwSize = 4 + (strh.dwSize + 8) + (strf.dwSize + 8);
 			strl.aList = [strh, strf];
 			
 			// AVI Header
-			var avih = MotionJPEGBuilder.createAVIMainHeader();
+			var avih = VideoBuilder.createAVIMainHeader();
 			avih.dwMicroSecPerFrame = frameDu;
 			avih.dwMaxBytesPerSec = this.movieDesc.maxJPEGSize * this.movieDesc.fps;
 			avih.dwTotalFrames = this.frameList.length;
@@ -170,7 +169,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		},
 		
 		build: function(onFinish) {
-			MotionJPEGBuilder.appendStruct(this.builder, this.avi);
+			VideoBuilder.appendStruct(this.builder, this.avi);
 			var blob = this.builder.getBlob('video/avi');
 			
 			var U = window.URL || window.webkitURL;
@@ -188,8 +187,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		}
 	};
 	
-	MotionJPEGBuilder.appendStruct = function(bb, s, nest) {
-		nest = nest || 0;
+	VideoBuilder.appendStruct = function(bb, s) {
 		if (!s._order) {
 			throw "Structured data must have '_order'";
 		}
@@ -199,9 +197,6 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		for (var i = 0;i < len;i++) {
 			var fieldName = od[i];
 			var val = s[fieldName];
-			if (Verbose) {
-				console.log("          ".substring(0,nest) + fieldName);
-			}
 
 			var _abtempDWORD = new ArrayBuffer(4);
 			var _u8tempDWORD = new Uint8Array(_abtempDWORD);
@@ -240,14 +235,14 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			case 'a': // Array of structured data
 				var dlen = val.length;
 				for (var j = 0;j < dlen;j++) {
-					MotionJPEGBuilder.appendStruct(bb, val[j], nest+1);
+					VideoBuilder.appendStruct(bb, val[j]);
 				}
 				break;
 			case 'r': // Raw(ArrayBuffer)
 				bb.append(val);
 				break;
 			case 's': // Structured data
-				MotionJPEGBuilder.appendStruct(bb, val, nest+1);
+				VideoBuilder.appendStruct(bb, val);
 				break;
 			case 'h': // Handler function
 				val(bb);
@@ -259,7 +254,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		}
 	};
 	
-	MotionJPEGBuilder.createAVIStruct = function() {
+	VideoBuilder.createAVIStruct = function() {
 		return {
 			chRIFF: 'RIFF',
 			chFourCC: 'AVI ',
@@ -269,7 +264,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		};
 	};
 
-	MotionJPEGBuilder.createAVIMainHeader = function() {
+	VideoBuilder.createAVIMainHeader = function() {
 		return {
 			chFourCC: 'avih',
 			dwSize: 56,
@@ -303,7 +298,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		};
 	};
 
-	MotionJPEGBuilder.createHeaderLIST = function() {
+	VideoBuilder.createHeaderLIST = function() {
 		return {
 			chLIST: 'LIST',
 			dwSize: 0,
@@ -313,7 +308,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		};
 	};
 	
-	MotionJPEGBuilder.createMoviLIST = function() {
+	VideoBuilder.createMoviLIST = function() {
 		return {
 			chLIST: 'LIST',
 			dwSize: 0,
@@ -323,7 +318,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		};
 	};
 	
-	MotionJPEGBuilder.createMoviStream = function() {
+	VideoBuilder.createMoviStream = function() {
 		return {
 			chType: '00dc',
 			dwSize: 0,
@@ -332,7 +327,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		}
 	};
 
-	MotionJPEGBuilder.createStreamHeaderLIST = function() {
+	VideoBuilder.createStreamHeaderLIST = function() {
 		return {
 			chLIST: 'LIST',
 			dwSize: 0,
@@ -342,7 +337,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		};
 	};
 
-	MotionJPEGBuilder.createStreamFormat = function() {
+	VideoBuilder.createStreamFormat = function() {
 		return {
 			chFourCC: 'strf',
 			dwSize: 0,
@@ -351,7 +346,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		};
 	};
 	
-	MotionJPEGBuilder.createStreamHeader = function() {
+	VideoBuilder.createStreamHeader = function() {
 		return {
 			chFourCC: 'strh',
 			dwSize: 56,
@@ -389,7 +384,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		};
 	};
 	
-	MotionJPEGBuilder.createBitmapHeader = function() {
+	VideoBuilder.createBitmapHeader = function() {
 		return {
 			dwSize:    40,
 			dwWidth:   10,
@@ -410,7 +405,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 	};
 
 
-	MotionJPEGBuilder.createMJPEG = function() {
+	VideoBuilder.createMJPEG = function() {
 		return {
 			W_SOI: 0xffd8,
 			aSegments: null,
@@ -419,7 +414,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		};
 	};
 	
-	MotionJPEGBuilder.KnownMarkers = {
+	VideoBuilder.KnownMarkers = {
 		0xC0: 'SOF0',
 		0xC4: 'DHT',
 		0xDA: 'SOS',
@@ -495,6 +490,6 @@ Copyright (c) 2016 Ponomarenko Pavlo
 	
 	// export
 	aGlobal.movbuilder = {
-		MotionJPEGBuilder: MotionJPEGBuilder
+		MotionJPEGBuilder: VideoBuilder
 	};
 })(window);
