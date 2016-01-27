@@ -28,5 +28,10 @@ Next, add frames.
 And then, finish to get URL for generated content.
 
     builder.finish(function(generatedURL) {
-        open(generatedURL);
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.style.display = 'none';
+        a.href = generatedURL;
+        a.download = 'video.avi';
+        a.click();
     });
