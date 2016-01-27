@@ -303,7 +303,7 @@
 			
 			var count = 120;
 			function advance(){
-				bxs.tick();
+				bxs.tick();g
 				if (--count > 0) {
 					setTimeout(advance, 10);
 				}
