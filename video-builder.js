@@ -13,8 +13,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 	var Verbose = false;
 
 	function MotionJPEGBuilder() {
-		var B = getBlobBuilder();
-		this.builder = new B();
+		this.builder = new BlobBuilder();
 		this.b64 = new Base64();
 		this.movieDesc = {
 			w: 0, h:0, fps: 0,
@@ -27,12 +26,23 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		this.moviLIST   = MotionJPEGBuilder.createMoviLIST();
 		this.frameList  = [];
 	}
-	
-	function getBlobBuilder() {
-		return aGlobal.MozBlobBuilder ||
-		       aGlobal.BlobBuilder ||
-		       aGlobal.WebKitBlobBuilder || null;
+
+
+	var BlobBuilder = function() {
+		this.parts = [];
 	}
+
+	BlobBuilder.prototype.append = function(part) {
+		this.parts.push(part);
+		this.blob = undefined; // Invalidate the blob
+	};
+
+	BlobBuilder.prototype.getBlob = function(type) {
+		if (!this.blob) {
+			this.blob = new Blob(this.parts, { type: type });
+		}
+		return this.blob;
+	};
 	
 	MotionJPEGBuilder.prototype = {
 		setup: function(frameWidth, frameHeight, fps) {
@@ -56,7 +66,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			for (i = 0;i < bytes.length;i++) {
 				u8a[i] = bytes[i];
 			}
-			var bb = new ( getBlobBuilder() );
+			var bb = new BlobBuilder();
 			bb.append(abuf);
 			var blob = bb.getBlob('image/jpeg');
 
@@ -436,12 +446,12 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			this.symbols.push(String.fromCharCode(startChar + i));
 		}
 		this.symbols.push("+", "/");
-		
+
 		this.encodeMap = [];
 		for(var i = 0; i < this.symbols.length; i++) {
 			this.encodeMap[i] = this.symbols[i];
 		}
-		
+
 		this.decodeMap = [];
 		for(var i = 0; i < this.symbols.length; i++) {
 			this.decodeMap[this.symbols[i]] = i;
@@ -454,7 +464,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		if(encoded.length % 4 != 0) {
 			throw "encoded.length must be a multiple of 4.";
 		}
-		
+
 		var decoded = [];
 		var map = this.decodeMap;
 		for (var i = 0, len = encoded.length; i < len; i += 4) {
@@ -462,24 +472,24 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			var b1 = map[encoded[i + 1]];
 			var b2 = map[encoded[i + 2]];
 			var b3 = map[encoded[i + 3]];
-			
+
 			var d0 = ((b0 << 2) + (b1 >> 4)) & 0xff;
 			decoded.push(d0);
-			
+
 			if(b2 == null) break; // encoded[i + 1] == "="
-			
+
 			var d1 = ((b1 << 4) + (b2 >> 2)) & 0xff;
 			decoded.push(d1);
-			
+
 			if(b3 == null) break; // encoded[i + 2] == "="
-			
+
 			var d2 = ((b2 << 6) + b3) & 0xff;
 			decoded.push(d2);
-			
+
 		}
-		
+
 		return decoded;
-	};	
+	};
 	
 	
 	// export
