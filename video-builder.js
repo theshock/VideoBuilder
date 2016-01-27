@@ -109,7 +109,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 				streamSize += frsize;
 			}
 			
-			this.moviLIST.dwSize = streamSize + 4; // + 'movi'
+			moviLIST.dwSize = streamSize + 4; // + 'movi'
 						
 			// stream header
 			
