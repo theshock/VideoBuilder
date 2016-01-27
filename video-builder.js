@@ -11,7 +11,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 	var AVIIF_KEYFRAME = 0x00000010;
 	var RateBase = 1000000;
 
-	function VideoBuilder() {
+	function VideoBuilder(config) {
 		this.b64 = new Base64();
 		this.movieDesc = {
 			w: 0, h:0, fps: 0,
@@ -20,6 +20,10 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		};
 
 		this.frameList  = [];
+
+		if (config != null) {
+			this.setup(config);
+		}
 	}
 
 
