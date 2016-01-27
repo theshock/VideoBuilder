@@ -5,9 +5,7 @@ Javascript MotionJPEG/AVI builder (video-builder.js) enables you to save your ca
 At first, generate VideoBuilder and setup.
 
     var builder = new VideoBuilder();
-    builder.setup(640 /* width  */ ,
-                  360 /* height */ ,
-                  30 /* FPS */ );
+    builder.setup({ width: 640, height: 360, fps: 30 });
 
 Next, add frames.
 

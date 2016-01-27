@@ -18,10 +18,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			videoStreamSize: 0,
 			maxJPEGSize: 0
 		};
-		
-		this.avi = VideoBuilder.createAVIStruct();
-		this.headerLIST = VideoBuilder.createHeaderLIST();
-		this.moviLIST   = VideoBuilder.createMoviLIST();
+
 		this.frameList  = [];
 	}
 
@@ -43,10 +40,10 @@ Copyright (c) 2016 Ponomarenko Pavlo
 	};
 	
 	VideoBuilder.prototype = {
-		setup: function(frameWidth, frameHeight, fps) {
-			this.movieDesc.w = frameWidth;
-			this.movieDesc.h = frameHeight;
-			this.movieDesc.fps = fps;
+		setup: function(config) {
+			this.movieDesc.w = config.width;
+			this.movieDesc.h = config.height;
+			this.movieDesc.fps = config.fps;
 		},
 	
 		addCanvasFrame: function(canvas) {
@@ -88,14 +85,18 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		},
 		
 		finish: function(onFinish) {
+			var avi = VideoBuilder.createAVIStruct();
+			var headerLIST = VideoBuilder.createHeaderLIST();
+			var moviLIST   = VideoBuilder.createMoviLIST();
+
 			var streamSize = 0;
-			this.moviLIST.aStreams = [];
+			moviLIST.aStreams = [];
 			var frameCount = this.frameList.length;
 			var frameIndices = [];
 			var frOffset = 4; // 'movi' +0
 			var IndexEntryOrder = ['chId', 'dwFlags', 'dwOffset', 'dwLength'];
 			for (var i = 0;i < frameCount;i++) {
-				var frsize = this.addVideoStreamData(this.moviLIST.aStreams, this.frameList[i]);
+				var frsize = this.addVideoStreamData(moviLIST.aStreams, this.frameList[i]);
 				frameIndices.push({
 					chId: '00dc',
 					dwFlags: AVIIF_KEYFRAME,
@@ -144,8 +145,8 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			var hdrlSize = 4;
 			hdrlSize += avih.dwSize + 8;
 			hdrlSize += strl.dwSize + 8;
-			this.headerLIST.dwSize = hdrlSize;
-			this.headerLIST.aData = [avih, strl];
+			headerLIST.dwSize = hdrlSize;
+			headerLIST.aData = [avih, strl];
 
 			var indexChunk = {
 				chFourCC: 'idx1',
@@ -156,19 +157,19 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			
 			// AVI Container
 			var aviSize = 0;
-			aviSize += 8 + this.headerLIST.dwSize;
-			aviSize += 8 + this.moviLIST.dwSize;
+			aviSize += 8 + headerLIST.dwSize;
+			aviSize += 8 + moviLIST.dwSize;
 			aviSize += 8 + indexChunk.dwSize;
 						
-			this.avi.dwSize = aviSize + 4;
-			this.avi.aData = [this.headerLIST, this.moviLIST, indexChunk];
+			avi.dwSize = aviSize + 4;
+			avi.aData = [headerLIST, moviLIST, indexChunk];
 
-			this.build(onFinish);
+			this.build(avi, onFinish);
 		},
 		
-		build: function(onFinish) {
+		build: function(avi, onFinish) {
 			var builder = new BlobBuilder();
-			VideoBuilder.appendStruct(builder, this.avi);
+			VideoBuilder.appendStruct(builder, avi);
 			var blob = builder.getBlob('video/avi');
 			
 			var U = window.URL || window.webkitURL;
@@ -196,8 +197,8 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		for (var i = 0; i < len; i++) {
 			var fieldName = od[i];
 			var val = s[fieldName];
-
-			switch(fieldName.charAt(0)) {
+			var char = fieldName.charAt(0);
+			switch(char) {
 			case 'b': // BYTE
 				var _abtempBYTE = new ArrayBuffer(1);
 				var _u8tempBYTE = new Uint8Array(_abtempBYTE);
@@ -208,31 +209,30 @@ Copyright (c) 2016 Ponomarenko Pavlo
 				bb.append(val);
 				break;
 			case 'd': // DWORD
-				var _abtempDWORD = new ArrayBuffer(4);
-				var _u8tempDWORD = new Uint8Array(_abtempDWORD);
-				_u8tempDWORD[0] =  val        & 0xff;
-				_u8tempDWORD[1] = (val >> 8)  & 0xff;
-				_u8tempDWORD[2] = (val >> 16) & 0xff;
-				_u8tempDWORD[3] = (val >> 24) & 0xff;
-				bb.append(_abtempDWORD);
+				var abtempDWORD = new ArrayBuffer(4);
+				var u8tempDWORD = new Uint8Array(abtempDWORD);
+				u8tempDWORD[0] =  val        & 0xff;
+				u8tempDWORD[1] = (val >> 8)  & 0xff;
+				u8tempDWORD[2] = (val >> 16) & 0xff;
+				u8tempDWORD[3] = (val >> 24) & 0xff;
+				bb.append(abtempDWORD);
 				break;
 			case 'w': // WORD
-				var _abtempWORD = new ArrayBuffer(2);
-				var _u8tempWORD = new Uint8Array(_abtempWORD);
-				_u8tempWORD[0] =  val        & 0xff;
-				_u8tempWORD[1] = (val >> 8)  & 0xff;
-				bb.append(_abtempWORD);
-				break
 			case 'W': // WORD(BE)
-				var _abtempWORD = new ArrayBuffer(2);
-				var _u8tempWORD = new Uint8Array(_abtempWORD);
-				_u8tempWORD[0] = (val >> 8)  & 0xff;
-				_u8tempWORD[1] =  val        & 0xff;
-				bb.append(_abtempWORD);
-				break
+				var abtempWORD = new ArrayBuffer(2);
+				var u8tempWORD = new Uint8Array(abtempWORD);
+				if (char === 'w') {
+					u8tempWORD[0] =  val       & 0xff;
+					u8tempWORD[1] = (val >> 8) & 0xff;
+				} else {
+					u8tempWORD[0] = (val >> 8) & 0xff;
+					u8tempWORD[1] =  val       & 0xff;
+				}
+				bb.append(abtempWORD);
+				break;
 			case 'a': // Array of structured data
 				var dlen = val.length;
-				for (var j = 0;j < dlen;j++) {
+				for (var j = 0; j < dlen; j++) {
 					VideoBuilder.appendStruct(bb, val[j]);
 				}
 				break;
@@ -246,7 +246,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 				val(bb);
 				break;
 			default:
-				throw "Unknown data type: "+fieldName;
+				throw new TypeError("Unknown data type: "+fieldName);
 				break;
 			}
 		}

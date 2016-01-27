@@ -201,7 +201,7 @@
 			drawnFrames = 0;
 			
 			mBuilder = new VideoBuilder();
-			mBuilder.setup(bxs.width, bxs.height, 30);
+			mBuilder.setup({ width: bxs.width, height: bxs.height, fps: 30 });
 			for (var i = 0;i < 30;i++) {
 				mBuilder.addCanvasFrame(bxs.targetCanvas);
 			}
