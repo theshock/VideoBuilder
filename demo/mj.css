@@ -1,0 +1,118 @@
+body, html {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: #fff;
+	color: #000;
+}
+
+h1 {
+	background: #222 url(images/tex-canvas.png) center left repeat-x;
+	padding: 10px;
+	margin: 0;
+	font-size: 20px;
+	color: rgba(255,240,220,0.58);
+	text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+	font-family: Arial, sans-serif;
+}
+
+h1 a {
+	color: rgba(255,240,220,0.7);
+}
+
+pre {
+	background: #edeae5;
+	padding: 0.5em;
+}
+
+p img {
+	border: 1px solid #fff;
+	box-shadow: 0 1px 1px #000;
+}
+
+#main-content {
+	background: #fff url(images/paperback2.png) top left repeat-x;
+	margin: 0;
+	padding: 19px 0.5em 0.5em 0.5em;
+	box-shadow: 0 0 1px 1px rgba(0,0,0,0.3);
+}
+
+#mj-gentest {
+	text-align: center;
+	width: 680px;
+	padding: 4px;
+	margin-left: auto;
+	margin-right: auto;
+	background: #eee url(images/tex-canvas-g.png);
+	border-radius: 8px;
+	box-shadow: 0 1px 3px rgba(0,0,0, 0.4) inset;
+}
+
+#mj-gentest canvas {
+	border: 2px solid #fff;
+	box-shadow: 0 1px 3px rgba(0,0,0, 0.4);
+}
+
+#mj-gentest button {
+	font-family: Arial, sans-serif;
+	background-color: #862;
+	background: -moz-linear-gradient(top, #862, #741);
+    background: -webkit-gradient(linear, left top, left bottom, from(#862), to(#741));
+    box-shadow: 0 0 1px 1px #c84 inset,  0 1px 3px rgba(0,0,0, 0.4);
+	color: #fff;
+	border: 1px solid #431;
+	border-radius: 6px;
+	padding: 4px;
+	cursor: pointer;
+	font-size: 13px;
+	margin: 6px;
+}
+
+#mj-gentest input {
+	background-color: rgba(0,0,0,0.1);
+	border: 1px solid rgba(255,255,255,0.4);
+	margin-top: 8px'
+	padding: 4px;
+	font-size: 22px;
+    box-shadow: 0 1px 3px rgba(0,0,0, 0.4) inset;
+}
+
+#mj-gentest h2 {
+	padding: 0.5em;
+	margin: 0;
+	color: #321;
+	text-shadow: 0 1px 0 #fff;
+}
+
+#mj-gentest button:active {
+	position: relative;
+	top: 1px;
+    box-shadow: 0 0 1px 1px #c84 inset;
+	background: -moz-linear-gradient(top, #741, #631);
+    background: -webkit-gradient(linear, left top, left bottom, from(#741), to(#631));
+}
+
+#gen-download {
+	font-family: Arial, sans-serif;
+	padding: 4px;
+	font-size: 13px;
+	border: 1px solid #381;
+    box-shadow: 0 0 1px 1px #9e6 inset,  0 1px 3px rgba(0,0,0, 0.4);
+	background: -moz-linear-gradient(top, #6c3, #381);
+    background: -webkit-gradient(linear, left top, left bottom, from(#6c3), to(#381));
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+	border-radius: 6px;
+	margin-left: 9px;
+	opacity: 0.4;
+}
+
+address {
+	font-family: Arial, sans-serif;
+	text-align: center;
+	padding: 1em;
+}
+
