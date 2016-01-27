@@ -7,7 +7,7 @@
 
         <script src="js/zepto.min.js" type="text/javascript"></script>
         <script src="js/main.js" type="text/javascript"></script>
-        
+
         <script src="../video-builder.js" type="text/javascript"></script>
 
         <script src="js/box2d/prototype-1.6.0.2.js"></script>
@@ -29,55 +29,55 @@
         <script src="js/box2d/dynamics/joints/box2d-joints.combined.js"></script>
 
 
-	</head>
-	<body onload="void launch()">
-		<h1><a href="/">ushiroad</a> &raquo; Javascript MotionJPEG/AVI Builder</h1>
-		<div id="main-content">
-			<p><img alt="[AVI generator]" src="images/mj-thumb.jpg
+    </head>
+    <body onload="void launch()">
+        <h1><a href="/">ushiroad</a> &raquo; Javascript MotionJPEG/AVI Builder</h1>
+        <div id="main-content">
+            <p><img alt="[AVI generator]" src="images/mj-thumb.jpg
 "><br><br><a href="../video-builder.js">Javascript MotionJPEG/AVI builder(mjbuilder.js)</a> enables you to save your canvas animation into a single avi file.</p>
-			<ul>
-				<li>For artists: Spread your work on vimeo, youtube...</li>
-				<li>For researchers: You can distribute visualization results.</li>
-			</ul>
-			<p>MotionJPEG is suitable for clip on movie authoring tool because it's almost &ldquo;raw&rdquo; format. Please recompress if you want to distribute without compilation.</p>
-			<h2>Quick Start</h2>
+            <ul>
+                <li>For artists: Spread your work on vimeo, youtube...</li>
+                <li>For researchers: You can distribute visualization results.</li>
+            </ul>
+            <p>MotionJPEG is suitable for clip on movie authoring tool because it's almost &ldquo;raw&rdquo; format. Please recompress if you want to distribute without compilation.</p>
+            <h2>Quick Start</h2>
 <p>At first, generate MotionJPEGBuilder and setup.</p>
-			<pre>
+            <pre>
 var builder = new movbuilder.MotionJPEGBuilder();
 builder.setup(640 /* width  */ ,
               360 /* height */ ,
               30 /* FPS */ );
-			</pre>
-<p>Next, add frames.</p>
-<pre>
-draw();
-builder.addCanvasFrame(canvas);
+            </pre>
+            <p>Next, add frames.</p>
+            <pre>
+            draw();
+            builder.addCanvasFrame(canvas);
 
-draw();
-builder.addCanvasFrame(canvas);
+            draw();
+            builder.addCanvasFrame(canvas);
 
-draw();
-builder.addCanvasFrame(canvas);
+            draw();
+            builder.addCanvasFrame(canvas);
 
- :
- :
- :
-</pre>
-<p>And then, finish to get URL for generated content.</p>
-<pre>
-builder.finish(function(generatedURL) {
-	open(generatedURL);
-});
-</pre>
+             :
+             :
+             :
+            </pre>
+            <p>And then, finish to get URL for generated content.</p>
+            <pre>
+            builder.finish(function(generatedURL) {
+                open(generatedURL);
+            });
+            </pre>
 
-			<div id="mj-gentest">
-				<h2>Demonstration (Chrome/Firefox)</h2>
-				<canvas id="cv1"></canvas><br>
-				Input: <input value="MOVIE" type="text" id="board-text" maxLength="6" size="8"><br>
-				<button id="btn-preview">Preview</button> <button id="btn-generate">Generate</button>
-				<a id="gen-download" download="generated.avi" id="gen-dl">Download</a>
-			</div>
-		</div>
-		<address>&copy;2012 ushiroad</address>
-	</body>
+            <div id="mj-gentest">
+                <h2>Demonstration (Chrome/Firefox)</h2>
+                <canvas id="cv1"></canvas><br>
+                Input: <input value="MOVIE" type="text" id="board-text" maxLength="6" size="8"><br>
+                <button id="btn-preview">Preview</button> <button id="btn-generate">Generate</button>
+                <a id="gen-download" download="generated.avi">Download</a>
+            </div>
+        </div>
+        <address>&copy;2012 ushiroad</address>
+    </body>
 </html>
