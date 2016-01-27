@@ -194,28 +194,23 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		
 		var od = s._order;
 		var len = od.length;
-		for (var i = 0;i < len;i++) {
+		for (var i = 0; i < len; i++) {
 			var fieldName = od[i];
 			var val = s[fieldName];
 
-			var _abtempDWORD = new ArrayBuffer(4);
-			var _u8tempDWORD = new Uint8Array(_abtempDWORD);
-
-			var _abtempWORD = new ArrayBuffer(2);
-			var _u8tempWORD = new Uint8Array(_abtempWORD);
-
-			var _abtempBYTE = new ArrayBuffer(1);
-			var _u8tempBYTE = new Uint8Array(_abtempBYTE);
-
 			switch(fieldName.charAt(0)) {
 			case 'b': // BYTE
+				var _abtempBYTE = new ArrayBuffer(1);
+				var _u8tempBYTE = new Uint8Array(_abtempBYTE);
 				_u8tempBYTE[0] = val;
 				bb.append(_abtempBYTE);
-				break
+				break;
 			case 'c': // chars
 				bb.append(val);
 				break;
 			case 'd': // DWORD
+				var _abtempDWORD = new ArrayBuffer(4);
+				var _u8tempDWORD = new Uint8Array(_abtempDWORD);
 				_u8tempDWORD[0] =  val        & 0xff;
 				_u8tempDWORD[1] = (val >> 8)  & 0xff;
 				_u8tempDWORD[2] = (val >> 16) & 0xff;
@@ -223,11 +218,15 @@ Copyright (c) 2016 Ponomarenko Pavlo
 				bb.append(_abtempDWORD);
 				break;
 			case 'w': // WORD
+				var _abtempWORD = new ArrayBuffer(2);
+				var _u8tempWORD = new Uint8Array(_abtempWORD);
 				_u8tempWORD[0] =  val        & 0xff;
 				_u8tempWORD[1] = (val >> 8)  & 0xff;
 				bb.append(_abtempWORD);
 				break
 			case 'W': // WORD(BE)
+				var _abtempWORD = new ArrayBuffer(2);
+				var _u8tempWORD = new Uint8Array(_abtempWORD);
 				_u8tempWORD[0] = (val >> 8)  & 0xff;
 				_u8tempWORD[1] =  val        & 0xff;
 				bb.append(_abtempWORD);
