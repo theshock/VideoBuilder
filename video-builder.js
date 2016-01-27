@@ -12,7 +12,6 @@ Copyright (c) 2016 Ponomarenko Pavlo
 	var RateBase = 1000000;
 
 	function VideoBuilder() {
-		this.builder = new BlobBuilder();
 		this.b64 = new Base64();
 		this.movieDesc = {
 			w: 0, h:0, fps: 0,
@@ -61,8 +60,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			
 			var abuf = new ArrayBuffer(bytes.length);
 			var u8a  = new Uint8Array(abuf);
-			var i;
-			for (i = 0;i < bytes.length;i++) {
+			for (var i = 0; i < bytes.length; i++) {
 				u8a[i] = bytes[i];
 			}
 			var bb = new BlobBuilder();
@@ -104,11 +102,11 @@ Copyright (c) 2016 Ponomarenko Pavlo
 					dwOffset: frOffset,
 					dwLength: frsize - 8,
 					_order: IndexEntryOrder
-				})
+				});
 				
 				frOffset += frsize;
 				streamSize += frsize;
-			};
+			}
 			
 			this.moviLIST.dwSize = streamSize + 4; // + 'movi'
 						
@@ -169,8 +167,9 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		},
 		
 		build: function(onFinish) {
-			VideoBuilder.appendStruct(this.builder, this.avi);
-			var blob = this.builder.getBlob('video/avi');
+			var builder = new BlobBuilder();
+			VideoBuilder.appendStruct(builder, this.avi);
+			var blob = builder.getBlob('video/avi');
 			
 			var U = window.URL || window.webkitURL;
 			if (U) {
