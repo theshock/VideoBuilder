@@ -12,7 +12,6 @@ Copyright (c) 2016 Ponomarenko Pavlo
 	var RateBase = 1000000;
 
 	function VideoBuilder(config) {
-		this.b64 = new Base64();
 		this.movieDesc = {
 			w: 0, h:0, fps: 0,
 			videoStreamSize: 0,
@@ -54,7 +53,7 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			var u = canvas.toDataURL('image/jpeg');
 			var dataStart = u.indexOf(',') + 1;
 			
-			var bytes = this.b64.decode(u.substring(dataStart));
+			var bytes = base64.decode(u.substring(dataStart));
 			if (bytes.length % 2) { // padding
 				bytes.push(0);
 			}

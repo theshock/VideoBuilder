@@ -1,41 +1,34 @@
 (function(global) {
 
 	var Base64 = function() {
-		this.initialize();
-	};
-
-	Base64.prototype.initialize = function() {
 		this.symbols = [];
-		var startChar = "A".charCodeAt(0);
-		for(var i = 0; i < 26; i++) {
-			this.symbols.push(String.fromCharCode(startChar + i));
-		}
-		var startChar = "a".charCodeAt(0);
-		for(var i = 0; i < 26; i++) {
-			this.symbols.push(String.fromCharCode(startChar + i));
-		}
-		var startChar = "0".charCodeAt(0);
-		for(var i = 0; i < 10; i++) {
-			this.symbols.push(String.fromCharCode(startChar + i));
-		}
-		this.symbols.push("+", "/");
+
+		this._addSymbolsFrom( 'A'.charCodeAt(0), 26 );
+		this._addSymbolsFrom( 'a'.charCodeAt(0), 26 );
+		this._addSymbolsFrom( '0'.charCodeAt(0), 10 );
+
+		this.symbols.push('+', '/');
 
 		this.encodeMap = [];
+		this.decodeMap = [];
+
 		for(var i = 0; i < this.symbols.length; i++) {
 			this.encodeMap[i] = this.symbols[i];
-		}
-
-		this.decodeMap = [];
-		for(var i = 0; i < this.symbols.length; i++) {
 			this.decodeMap[this.symbols[i]] = i;
 		}
-		this.decodeMap["="] = null;
+
+		this.decodeMap['='] = null;
 	};
 
+	Base64.prototype._addSymbolsFrom = function (startChar, max) {
+		for (var i = 0; i < max; i++) {
+			this.symbols.push(String.fromCharCode(startChar + i));
+		}
+	};
 
 	Base64.prototype.decode = function(encoded) {
 		if(encoded.length % 4 != 0) {
-			throw "encoded.length must be a multiple of 4.";
+			throw new Error('encoded.length must be a multiple of 4.');
 		}
 
 		var decoded = [];
@@ -49,12 +42,12 @@
 			var d0 = ((b0 << 2) + (b1 >> 4)) & 0xff;
 			decoded.push(d0);
 
-			if(b2 == null) break; // encoded[i + 1] == "="
+			if(b2 == null) break; // encoded[i + 1] == '='
 
 			var d1 = ((b1 << 4) + (b2 >> 2)) & 0xff;
 			decoded.push(d1);
 
-			if(b3 == null) break; // encoded[i + 2] == "="
+			if(b3 == null) break; // encoded[i + 2] == '='
 
 			var d2 = ((b2 << 6) + b3) & 0xff;
 			decoded.push(d2);
@@ -64,6 +57,6 @@
 		return decoded;
 	};
 
-	window.Base64 = Base64;
+	global.base64 = new Base64();
 
 })(window);
