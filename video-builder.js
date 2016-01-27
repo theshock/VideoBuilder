@@ -188,15 +188,6 @@ Copyright (c) 2016 Ponomarenko Pavlo
 		}
 	};
 	
-	var _abtempDWORD = new ArrayBuffer(4);
-	var _u8tempDWORD = new Uint8Array(_abtempDWORD);
-
-	var _abtempWORD = new ArrayBuffer(2);
-	var _u8tempWORD = new Uint8Array(_abtempWORD);
-
-	var _abtempBYTE = new ArrayBuffer(1);
-	var _u8tempBYTE = new Uint8Array(_abtempBYTE);
-	
 	MotionJPEGBuilder.appendStruct = function(bb, s, nest) {
 		nest = nest || 0;
 		if (!s._order) {
@@ -211,6 +202,16 @@ Copyright (c) 2016 Ponomarenko Pavlo
 			if (Verbose) {
 				console.log("          ".substring(0,nest) + fieldName);
 			}
+
+			var _abtempDWORD = new ArrayBuffer(4);
+			var _u8tempDWORD = new Uint8Array(_abtempDWORD);
+
+			var _abtempWORD = new ArrayBuffer(2);
+			var _u8tempWORD = new Uint8Array(_abtempWORD);
+
+			var _abtempBYTE = new ArrayBuffer(1);
+			var _u8tempBYTE = new Uint8Array(_abtempBYTE);
+
 			switch(fieldName.charAt(0)) {
 			case 'b': // BYTE
 				_u8tempBYTE[0] = val;
