@@ -1,6 +1,6 @@
 This plugin is based on http://ushiroad.com/mjpeg/
 
-Javascript MotionJPEG/AVI builder (video-builder.js) enables you to save your canvas animation into a single avi file.
+Javascript VideoBuilder (video-builder.js) enables you to save your canvas animation into a single avi file.
 
 At first, generate VideoBuilder and setup.
 
